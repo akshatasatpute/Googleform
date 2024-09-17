@@ -30,3 +30,5 @@ pytest==6.2
 pytz==2024.1
 requests==2.25.1
 SQLAlchemy==1.4.23
+supabase-python==0.3.1
+
