@@ -108,7 +108,7 @@ if st.button("Upload and Analyse File") and uploaded_file is not None:
         try:
             # Load the credentials from the service account JSON file
             creds = service_account.Credentials.from_service_account_file(
-                r"https://twetkfnfqdtsozephdse.supabase.co/storage/v1/object/sign/stemcheck/strong-jetty-435412-q0-a8ef3686d38f.json?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJzdGVtY2hlY2svc3Ryb25nLWpldHR5LTQzNTQxMi1xMC1hOGVmMzY4NmQzOGYuanNvbiIsImlhdCI6MTcyNjY0MjMwNywiZXhwIjoxNzU4MTc4MzA3fQ.BmWrStlctVRCV3Kggo2pUlmfBYxWzZBP7rT3Ke6iVDc&t=2024-09-18T06%3A51%3A37.221Z", 
+                r"C:\Users\User\Downloads\strong-jetty-435412-q0-a8ef3686d38f.json", 
                 scopes=SCOPES
             )
         
