@@ -20,6 +20,7 @@ jsonschema==4.21.1
 numpy<2.0.0
 packaging<24.1
 pandas==2.2.2
+pillow <10
 postgrest-py==0.4.0
 prompt-toolkit==3.0.43
 pyarrow==16.0.0
