@@ -169,8 +169,7 @@ if st.button(combined_button_text):
         try:
             # Load the credentials from the service account JSON file
             creds = service_account.Credentials.from_service_account_file(
-                r"https://1drv.ms/u/c/1f4750c5cef9094f/ESfdjGMItENArvKoyfyAC-ABldoI1Psi2hKixXXnWXvoKg?e=cgUYE7", 
-                scopes=SCOPES
+                r"C:\Users\User\Downloads\strong-jetty-435412-q0-a8ef3686d38f.json", scopes=SCOPES
             )
         
             # Build the Drive service
