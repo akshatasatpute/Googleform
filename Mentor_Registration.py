@@ -162,15 +162,19 @@ if st.button(combined_button_text):
     SCOPES = ['https://www.googleapis.com/auth/drive.file']
     PARENT_FOLDER_ID = "14OXiGuiaksXmeTigOtHHRtky7bU8dOpG"
 
-
-
     # Function to upload a CSV file to Google Drive
     def upload_csv(uploaded_file):
         try:
-        # Load the credentials from the service account JSON file
+            # Get the current directory of the script
+            current_dir = os.path.dirname(os.path.abspath(__file__))
+        
+            # Path to the service account JSON file
+            json_file_path = os.path.join(current_dir, 'strong-jetty-435412-q0-a8ef3686d38f.json')
+
+            # Load the credentials from the service account JSON file
             creds = service_account.Credentials.from_service_account_file(
-                r"C:\Users\User\Downloads\strong-jetty-435412-q0-a8ef3686d38f.json",
-            scopes=SCOPES
+                json_file_path,
+                scopes=SCOPES
             )
 
             # Build the Drive service
@@ -184,7 +188,7 @@ if st.button(combined_button_text):
                 # Metadata for the file
                 file_metadata = {
                     'name': uploaded_file.name,  # Use the uploaded file name
-                    'parents': [PARENT_FOLDER_ID]  # The ID of the folder where the file will be uploaded
+                    'parents': ['your_parent_folder_id']  # The ID of the folder where the file will be uploaded
                 }
 
                 # Upload the file with the appropriate MIME type
@@ -193,18 +197,17 @@ if st.button(combined_button_text):
                     body=file_metadata,
                     media_body=media,
                     fields='id'
-                    ).execute()
+                ).execute()
 
                 # File uploaded successfully
                 st.success(f"CSV file uploaded successfully with ID: {file.get('id')}")
-                
 
                 # Clean up the temporary file after uploading
                 os.remove(temp_file_path)
 
-        except Exception as e:
-            st.error(f"An error occurred: {e}")
+            except Exception as e:
+                st.error(f"An error occurred: {e}")
 
-    # Assuming uploaded_file is a file uploaded using Streamlit file uploader
-    # Call the upload function
+# Assuming uploaded_file is a file uploaded using Streamlit file uploader
+# Call the upload function
     upload_csv(uploaded_file)
