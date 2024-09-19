@@ -205,8 +205,8 @@ if st.button(combined_button_text):
                 # Clean up the temporary file after uploading
                 os.remove(temp_file_path)
 
-            except Exception as e:
-                st.error(f"An error occurred: {e}")
+        except Exception as e:
+            st.error(f"An error occurred: {e}")
 
 # Assuming uploaded_file is a file uploaded using Streamlit file uploader
 # Call the upload function
