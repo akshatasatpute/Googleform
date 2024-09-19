@@ -13,8 +13,7 @@ from googleapiclient.discovery import build
 from google.oauth2 import service_account
 from googleapiclient.http import MediaFileUpload
 import os
-
-
+from PIL import Image
 
 
 
@@ -96,61 +95,7 @@ if uploaded_file is not None:
     else:
         st.write("File size exceeds the limit of 10MB. Please upload a smaller file.")
 
-# Button to trigger upload and analysis
-if st.button("Upload and Analyse File") and uploaded_file is not None:
 
-    # Define the Google Drive API scope
-    SCOPES = ['https://www.googleapis.com/auth/drive.file']
-    PARENT_FOLDER_ID = "14OXiGuiaksXmeTigOtHHRtky7bU8dOpG"
-
-    # Function to upload a CSV file to Google Drive
-    def upload_csv(uploaded_file):
-        try:
-            # Load the credentials from the service account JSON file
-            creds = service_account.Credentials.from_service_account_file(
-                r"C:\Users\User\Downloads\strong-jetty-435412-q0-a8ef3686d38f.json", 
-                scopes=SCOPES
-            )
-        
-            # Build the Drive service
-            service = build('drive', 'v3', credentials=creds)
-
-            # Create a temporary file to save the uploaded file
-            file_extension = uploaded_file.name.split('.')[-1].lower()  # Get file extension to define MIME type
-            mime_type = 'application/pdf' if file_extension == 'pdf' else 'text/csv' if file_extension == 'csv' else 'text/plain'
-
-            with tempfile.NamedTemporaryFile(delete=False, suffix=f".{file_extension}") as temp_file:
-                temp_file.write(uploaded_file.getbuffer())  # Save the uploaded file to the temp file
-                temp_file_path = temp_file.name  # Get the temp file path
-
-            # Close the temp file explicitly before uploading to Google Drive
-            temp_file.close()
-
-            # Metadata for the file
-            file_metadata = {
-                'name': uploaded_file.name,  # Use the uploaded file name
-                'parents': [PARENT_FOLDER_ID]  # The ID of the folder where the file will be uploaded
-            }
-
-            # Upload the file with appropriate MIME type
-            media = MediaFileUpload(temp_file_path, mimetype=mime_type, resumable=True)
-            file = service.files().create(
-                body=file_metadata,
-                media_body=media,
-                fields='id'
-            ).execute()
-
-            # File uploaded successfully
-            st.success(f"CSV file uploaded successfully with ID: {file.get('id')}")
-
-            # Clean up the temporary file after uploading
-            #os.remove(temp_file_path)
-
-        except Exception as e:
-            st.error(f"An error occurred: {e}")
-
-    # Call the upload function
-    upload_csv(uploaded_file)
 
 comments=st.text_input("If you have any comments, suggestions you want us to think about, please let us know.")
 
@@ -211,8 +156,59 @@ if st.button(combined_button_text):
     # Insert the JSON data into Supabase
     response_json = supabase.table(table_name).insert([json_data]).execute()
 
-    
    
 
+    # Define the Google Drive API scope
+    SCOPES = ['https://www.googleapis.com/auth/drive.file']
+    PARENT_FOLDER_ID = "14OXiGuiaksXmeTigOtHHRtky7bU8dOpG"
 
-    
+
+
+    # Function to upload a CSV file to Google Drive
+    def upload_csv(uploaded_file):
+        try:
+            # Load the credentials from the service account JSON file
+            creds = service_account.Credentials.from_service_account_file(
+                r"C:\Users\User\Downloads\strong-jetty-435412-q0-a8ef3686d38f.json", 
+                scopes=SCOPES
+            )
+        
+            # Build the Drive service
+            service = build('drive', 'v3', credentials=creds)
+
+            # Create a temporary file to save the uploaded file
+            file_extension = uploaded_file.name.split('.')[-1].lower()  # Get file extension to define MIME type
+            mime_type = 'application/pdf' if file_extension == 'pdf' else 'text/csv' if file_extension == 'csv' else 'text/plain'
+
+            with tempfile.NamedTemporaryFile(delete=False, suffix=f".{file_extension}") as temp_file:
+                temp_file.write(uploaded_file.getbuffer())  # Save the uploaded file to the temp file
+                temp_file_path = temp_file.name  # Get the temp file path
+
+                # Close the temp file explicitly before uploading to Google Drive
+                temp_file.close()
+
+                # Metadata for the file
+                file_metadata = {
+                    'name': uploaded_file.name,  # Use the uploaded file name
+                    'parents': [PARENT_FOLDER_ID]  # The ID of the folder where the file will be uploaded
+                }
+
+                # Upload the file with appropriate MIME type
+                media = MediaFileUpload(temp_file_path, mimetype=mime_type, resumable=True)
+                file = service.files().create(
+                    body=file_metadata,
+                    media_body=media,
+                    fields='id'
+                ).execute()
+
+                # File uploaded successfully
+                st.success(f"CSV file uploaded successfully with ID: {file.get('id')}")
+
+                # Clean up the temporary file after uploading
+                #os.remove(temp_file_path)
+
+        except Exception as e:
+            st.error(f"An error occurred: {e}")
+
+    # Call the upload function
+    upload_csv(uploaded_file)
