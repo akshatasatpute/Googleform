@@ -167,24 +167,19 @@ if st.button(combined_button_text):
     # Function to upload a CSV file to Google Drive
     def upload_csv(uploaded_file):
         try:
-            # Load the credentials from the service account JSON file
+        # Load the credentials from the service account JSON file
             creds = service_account.Credentials.from_service_account_file(
-                r"C:\Users\User\Downloads\strong-jetty-435412-q0-a8ef3686d38f.json", scopes=SCOPES
+                r"C:\Users\User\Downloads\strong-jetty-435412-q0-a8ef3686d38f.json",
+            scopes=SCOPES
             )
-        
+
             # Build the Drive service
             service = build('drive', 'v3', credentials=creds)
-
+        
             # Create a temporary file to save the uploaded file
-            file_extension = uploaded_file.name.split('.')[-1].lower()  # Get file extension to define MIME type
-            mime_type = 'application/pdf' if file_extension == 'pdf' else 'text/csv' if file_extension == 'csv' else 'text/plain'
-
-            with tempfile.NamedTemporaryFile(delete=False, suffix=f".{file_extension}") as temp_file:
-                temp_file.write(uploaded_file.getbuffer())  # Save the uploaded file to the temp file
+            with tempfile.NamedTemporaryFile(delete=False) as temp_file:
+                temp_file.write(uploaded_file.read())  # Save the uploaded file to the temp file
                 temp_file_path = temp_file.name  # Get the temp file path
-
-                # Close the temp file explicitly before uploading to Google Drive
-                temp_file.close()
 
                 # Metadata for the file
                 file_metadata = {
@@ -192,22 +187,24 @@ if st.button(combined_button_text):
                     'parents': [PARENT_FOLDER_ID]  # The ID of the folder where the file will be uploaded
                 }
 
-                # Upload the file with appropriate MIME type
-                media = MediaFileUpload(temp_file_path, mimetype=mime_type, resumable=True)
+                # Upload the file with the appropriate MIME type
+                media = MediaFileUpload(temp_file_path, mimetype='text/csv', resumable=True)
                 file = service.files().create(
                     body=file_metadata,
                     media_body=media,
                     fields='id'
-                ).execute()
+                    ).execute()
 
                 # File uploaded successfully
                 st.success(f"CSV file uploaded successfully with ID: {file.get('id')}")
+                
 
                 # Clean up the temporary file after uploading
-                #os.remove(temp_file_path)
+                os.remove(temp_file_path)
 
         except Exception as e:
             st.error(f"An error occurred: {e}")
 
+    # Assuming uploaded_file is a file uploaded using Streamlit file uploader
     # Call the upload function
     upload_csv(uploaded_file)
